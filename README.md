@@ -26,7 +26,7 @@ model = medcam.inject(model, output_dir="attention_maps", save_maps=True)
 
 ## Documentation
 M3d-CAM is fully documented and you can view the documentation under: <br/> 
-https://???.github.io/M3d-CAM
+https://M3d-Cam.github.io/M3d-CAM
 
 ## Examples
 
