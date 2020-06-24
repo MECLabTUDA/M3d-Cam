@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>medcam.backends.grad_cam API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>medcam.backends.grad_cam</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from collections import OrderedDict
+import numpy as np
+import torch
+from torch.nn import functional as F
+from medcam.backends.base import _BaseWrapper
+from medcam import medcam_utils
+
+# Changes the used method to hook into backward
+ENABLE_MODULE_HOOK = False
+
+class GradCAM(_BaseWrapper):
+
+    def __init__(self, model, target_layers=None, postprocessor=None, retain_graph=False):
+        &#34;&#34;&#34;
+        &#34;Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization&#34;
+        https://arxiv.org/pdf/1610.02391.pdf
+        Look at Figure 2 on page 4
+        &#34;&#34;&#34;
+        super(GradCAM, self).__init__(model, postprocessor=postprocessor, retain_graph=retain_graph)
+        self.fmap_pool = OrderedDict()
+        self.grad_pool = OrderedDict()
+        self._target_layers = target_layers
+        if target_layers == &#39;full&#39; or target_layers == &#39;auto&#39;:
+            target_layers = medcam_utils.get_layers(self.model)
+        elif isinstance(target_layers, str):
+            target_layers = [target_layers]
+        self.target_layers = target_layers
+
+    def _register_hooks(self):
+        &#34;&#34;&#34;Registers the forward and backward hooks to the layers.&#34;&#34;&#34;
+        def forward_hook(key):
+            def forward_hook_(module, input, output):
+                self.registered_hooks[key][0] = True
+                # Save featuremaps
+                if not isinstance(output, torch.Tensor):
+                    print(&#34;Cannot hook layer {} because its gradients are not in tensor format&#34;.format(key))
+
+                if not ENABLE_MODULE_HOOK:
+                    def _backward_hook(grad_out):
+                        self.registered_hooks[key][1] = True
+                        # Save the gradients correspond to the featuremaps
+                        self.grad_pool[key] = grad_out.detach()
+
+                    # Register backward hook directly to the output
+                    # Handle must be removed afterwards otherwise tensor is not freed
+                    if not self.registered_hooks[key][1]:
+                        _backward_handle = output.register_hook(_backward_hook)
+                        self.backward_handlers.append(_backward_handle)
+                self.fmap_pool[key] = output.detach()
+
+            return forward_hook_
+
+        # This backward hook method looks prettier but is currently bugged in pytorch (04/25/2020)
+        # Handle does not need to be removed, tensors are freed automatically
+        def backward_hook(key):
+            def backward_hook_(module, grad_in, grad_out):
+                self.registered_hooks[key][1] = True
+                # Save the gradients correspond to the featuremaps
+                self.grad_pool[key] = grad_out[0].detach()  # TODO: Still correct with batch size &gt; 1?
+
+            return backward_hook_
+
+        self.remove_hook(forward=True, backward=True)
+        for name, module in self.model.named_modules():
+            if self.target_layers is None or name in self.target_layers:
+                self.registered_hooks[name] = [False, False]
+                self.forward_handlers.append(module.register_forward_hook(forward_hook(name)))
+                if ENABLE_MODULE_HOOK:
+                    self.backward_handlers.append(module.register_backward_hook(backward_hook(name)))
+
+    def get_registered_hooks(self):
+        &#34;&#34;&#34;Returns every hook that was able to register to a layer.&#34;&#34;&#34;
+        registered_hooks = []
+        for layer in self.registered_hooks.keys():
+            if self.registered_hooks[layer][0] and self.registered_hooks[layer][1]:
+                registered_hooks.append(layer)
+        self.remove_hook(forward=True, backward=True)
+        if self._target_layers == &#39;full&#39; or self._target_layers == &#39;auto&#39;:
+            self.target_layers = registered_hooks
+        return registered_hooks
+
+    def forward(self, data):
+        &#34;&#34;&#34;Calls the forward() of the base.&#34;&#34;&#34;
+        self._register_hooks()
+        return super(GradCAM, self).forward(data)
+
+    def generate(self):
+        &#34;&#34;&#34;Generates an attention map.&#34;&#34;&#34;
+        self.remove_hook(forward=True, backward=True)
+        attention_maps = {}
+        if self._target_layers == &#34;auto&#34;:
+            layer, fmaps, grads = self._auto_layer_selection()
+            self._check_hooks(layer)
+            attention_map = self._generate_helper(fmaps, grads, layer).cpu().numpy()
+            attention_maps = {layer: attention_map}
+        else:
+            for layer in self.target_layers:
+                self._check_hooks(layer)
+                if self.registered_hooks[layer][0] and self.registered_hooks[layer][1]:
+                    fmaps = self._find(self.fmap_pool, layer)
+                    grads = self._find(self.grad_pool, layer)
+                    attention_map = self._generate_helper(fmaps, grads, layer)
+                    attention_maps[layer] = attention_map.cpu().numpy()
+        if not attention_maps:
+            raise ValueError(&#34;None of the hooks registered to the target layers&#34;)
+        return attention_maps
+
+    def _auto_layer_selection(self):
+        &#34;&#34;&#34;Selects the last layer from which attention maps can be generated.&#34;&#34;&#34;
+        # It&#39;s ugly but it works ;)
+        module_names = self.layers(reverse=True)
+        found_valid_layer = False
+
+        counter = 0
+        for layer in module_names:
+            try:
+                fmaps = self._find(self.fmap_pool, layer)
+                grads = self._find(self.grad_pool, layer)
+                nonzeros = np.count_nonzero(grads.detach().cpu().numpy())  # TODO: Add except here with description, replace nonzero with sum == 0?
+                self._compute_grad_weights(grads)
+                if nonzeros == 0 or not isinstance(fmaps, torch.Tensor) or not isinstance(grads, torch.Tensor):
+                    counter += 1
+                    continue
+                print(&#34;Selected module layer: {}&#34;.format(layer))
+                found_valid_layer = True
+                break
+            except ValueError:
+                counter += 1
+            except RuntimeError:
+                counter += 1
+            except IndexError:
+                counter += 1
+
+        if not found_valid_layer:
+            raise ValueError(&#34;Could not find a valid layer. &#34;
+                             &#34;Check if base.logits or the mask result of base._mask_output() contains only zeros. &#34;
+                             &#34;Check if requires_grad flag is true for the batch input and that no torch.no_grad statements effects medcam. &#34;
+                             &#34;Check if the model has any convolution layers.&#34;)
+
+        return layer, fmaps, grads
+
+    def _find(self, pool, target_layer):
+        &#34;&#34;&#34;Returns the feature maps or gradients for a specific layer.&#34;&#34;&#34;
+        if target_layer in pool.keys():
+            return pool[target_layer]
+        else:
+            raise ValueError(&#34;Invalid layer name: {}&#34;.format(target_layer))
+
+    def _compute_grad_weights(self, grads):
+        &#34;&#34;&#34;Computes the weights based on the gradients by average pooling.&#34;&#34;&#34;
+        if self.input_dim == 2:
+            return F.adaptive_avg_pool2d(grads, 1)
+        else:
+            return F.adaptive_avg_pool3d(grads, 1)
+
+    def _generate_helper(self, fmaps, grads, layer):
+        weights = self._compute_grad_weights(grads)
+        attention_map = torch.mul(fmaps, weights)
+        B, _, *data_shape = attention_map.shape
+        try:
+            attention_map = attention_map.view(B, self.output_channels, -1, *data_shape)
+        except RuntimeError:
+            raise RuntimeError(&#34;Number of set channels ({}) is not a multiple of the feature map channels ({}) in layer: {}&#34;.format(self.output_channels, fmaps.shape[1], layer))
+        attention_map = torch.sum(attention_map, dim=2)
+        attention_map = F.relu(attention_map)
+        attention_map = self._normalize_per_channel(attention_map)
+        return attention_map
+
+    def _check_hooks(self, layer):
+        &#34;&#34;&#34;Checks if all hooks registered.&#34;&#34;&#34;
+        if not self.registered_hooks[layer][0] and not self.registered_hooks[layer][1]:
+            raise ValueError(&#34;Neither forward hook nor backward hook did register to layer: &#34; + str(layer))
+        elif not self.registered_hooks[layer][0]:
+            raise ValueError(&#34;Forward hook did not register to layer: &#34; + str(layer))
+        elif not self.registered_hooks[layer][1]:
+            raise ValueError(&#34;Backward hook did not register to layer: &#34; + str(layer) + &#34;, Check if the hook was registered to a layer that is skipped during backward and thus no gradients are computed&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="medcam.backends.grad_cam.GradCAM"><code class="flex name class">
+<span>class <span class="ident">GradCAM</span></span>
+<span>(</span><span>model, target_layers=None, postprocessor=None, retain_graph=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>"Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization"
+<a href="https://arxiv.org/pdf/1610.02391.pdf">https://arxiv.org/pdf/1610.02391.pdf</a>
+Look at Figure 2 on page 4</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GradCAM(_BaseWrapper):
+
+    def __init__(self, model, target_layers=None, postprocessor=None, retain_graph=False):
+        &#34;&#34;&#34;
+        &#34;Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization&#34;
+        https://arxiv.org/pdf/1610.02391.pdf
+        Look at Figure 2 on page 4
+        &#34;&#34;&#34;
+        super(GradCAM, self).__init__(model, postprocessor=postprocessor, retain_graph=retain_graph)
+        self.fmap_pool = OrderedDict()
+        self.grad_pool = OrderedDict()
+        self._target_layers = target_layers
+        if target_layers == &#39;full&#39; or target_layers == &#39;auto&#39;:
+            target_layers = medcam_utils.get_layers(self.model)
+        elif isinstance(target_layers, str):
+            target_layers = [target_layers]
+        self.target_layers = target_layers
+
+    def _register_hooks(self):
+        &#34;&#34;&#34;Registers the forward and backward hooks to the layers.&#34;&#34;&#34;
+        def forward_hook(key):
+            def forward_hook_(module, input, output):
+                self.registered_hooks[key][0] = True
+                # Save featuremaps
+                if not isinstance(output, torch.Tensor):
+                    print(&#34;Cannot hook layer {} because its gradients are not in tensor format&#34;.format(key))
+
+                if not ENABLE_MODULE_HOOK:
+                    def _backward_hook(grad_out):
+                        self.registered_hooks[key][1] = True
+                        # Save the gradients correspond to the featuremaps
+                        self.grad_pool[key] = grad_out.detach()
+
+                    # Register backward hook directly to the output
+                    # Handle must be removed afterwards otherwise tensor is not freed
+                    if not self.registered_hooks[key][1]:
+                        _backward_handle = output.register_hook(_backward_hook)
+                        self.backward_handlers.append(_backward_handle)
+                self.fmap_pool[key] = output.detach()
+
+            return forward_hook_
+
+        # This backward hook method looks prettier but is currently bugged in pytorch (04/25/2020)
+        # Handle does not need to be removed, tensors are freed automatically
+        def backward_hook(key):
+            def backward_hook_(module, grad_in, grad_out):
+                self.registered_hooks[key][1] = True
+                # Save the gradients correspond to the featuremaps
+                self.grad_pool[key] = grad_out[0].detach()  # TODO: Still correct with batch size &gt; 1?
+
+            return backward_hook_
+
+        self.remove_hook(forward=True, backward=True)
+        for name, module in self.model.named_modules():
+            if self.target_layers is None or name in self.target_layers:
+                self.registered_hooks[name] = [False, False]
+                self.forward_handlers.append(module.register_forward_hook(forward_hook(name)))
+                if ENABLE_MODULE_HOOK:
+                    self.backward_handlers.append(module.register_backward_hook(backward_hook(name)))
+
+    def get_registered_hooks(self):
+        &#34;&#34;&#34;Returns every hook that was able to register to a layer.&#34;&#34;&#34;
+        registered_hooks = []
+        for layer in self.registered_hooks.keys():
+            if self.registered_hooks[layer][0] and self.registered_hooks[layer][1]:
+                registered_hooks.append(layer)
+        self.remove_hook(forward=True, backward=True)
+        if self._target_layers == &#39;full&#39; or self._target_layers == &#39;auto&#39;:
+            self.target_layers = registered_hooks
+        return registered_hooks
+
+    def forward(self, data):
+        &#34;&#34;&#34;Calls the forward() of the base.&#34;&#34;&#34;
+        self._register_hooks()
+        return super(GradCAM, self).forward(data)
+
+    def generate(self):
+        &#34;&#34;&#34;Generates an attention map.&#34;&#34;&#34;
+        self.remove_hook(forward=True, backward=True)
+        attention_maps = {}
+        if self._target_layers == &#34;auto&#34;:
+            layer, fmaps, grads = self._auto_layer_selection()
+            self._check_hooks(layer)
+            attention_map = self._generate_helper(fmaps, grads, layer).cpu().numpy()
+            attention_maps = {layer: attention_map}
+        else:
+            for layer in self.target_layers:
+                self._check_hooks(layer)
+                if self.registered_hooks[layer][0] and self.registered_hooks[layer][1]:
+                    fmaps = self._find(self.fmap_pool, layer)
+                    grads = self._find(self.grad_pool, layer)
+                    attention_map = self._generate_helper(fmaps, grads, layer)
+                    attention_maps[layer] = attention_map.cpu().numpy()
+        if not attention_maps:
+            raise ValueError(&#34;None of the hooks registered to the target layers&#34;)
+        return attention_maps
+
+    def _auto_layer_selection(self):
+        &#34;&#34;&#34;Selects the last layer from which attention maps can be generated.&#34;&#34;&#34;
+        # It&#39;s ugly but it works ;)
+        module_names = self.layers(reverse=True)
+        found_valid_layer = False
+
+        counter = 0
+        for layer in module_names:
+            try:
+                fmaps = self._find(self.fmap_pool, layer)
+                grads = self._find(self.grad_pool, layer)
+                nonzeros = np.count_nonzero(grads.detach().cpu().numpy())  # TODO: Add except here with description, replace nonzero with sum == 0?
+                self._compute_grad_weights(grads)
+                if nonzeros == 0 or not isinstance(fmaps, torch.Tensor) or not isinstance(grads, torch.Tensor):
+                    counter += 1
+                    continue
+                print(&#34;Selected module layer: {}&#34;.format(layer))
+                found_valid_layer = True
+                break
+            except ValueError:
+                counter += 1
+            except RuntimeError:
+                counter += 1
+            except IndexError:
+                counter += 1
+
+        if not found_valid_layer:
+            raise ValueError(&#34;Could not find a valid layer. &#34;
+                             &#34;Check if base.logits or the mask result of base._mask_output() contains only zeros. &#34;
+                             &#34;Check if requires_grad flag is true for the batch input and that no torch.no_grad statements effects medcam. &#34;
+                             &#34;Check if the model has any convolution layers.&#34;)
+
+        return layer, fmaps, grads
+
+    def _find(self, pool, target_layer):
+        &#34;&#34;&#34;Returns the feature maps or gradients for a specific layer.&#34;&#34;&#34;
+        if target_layer in pool.keys():
+            return pool[target_layer]
+        else:
+            raise ValueError(&#34;Invalid layer name: {}&#34;.format(target_layer))
+
+    def _compute_grad_weights(self, grads):
+        &#34;&#34;&#34;Computes the weights based on the gradients by average pooling.&#34;&#34;&#34;
+        if self.input_dim == 2:
+            return F.adaptive_avg_pool2d(grads, 1)
+        else:
+            return F.adaptive_avg_pool3d(grads, 1)
+
+    def _generate_helper(self, fmaps, grads, layer):
+        weights = self._compute_grad_weights(grads)
+        attention_map = torch.mul(fmaps, weights)
+        B, _, *data_shape = attention_map.shape
+        try:
+            attention_map = attention_map.view(B, self.output_channels, -1, *data_shape)
+        except RuntimeError:
+            raise RuntimeError(&#34;Number of set channels ({}) is not a multiple of the feature map channels ({}) in layer: {}&#34;.format(self.output_channels, fmaps.shape[1], layer))
+        attention_map = torch.sum(attention_map, dim=2)
+        attention_map = F.relu(attention_map)
+        attention_map = self._normalize_per_channel(attention_map)
+        return attention_map
+
+    def _check_hooks(self, layer):
+        &#34;&#34;&#34;Checks if all hooks registered.&#34;&#34;&#34;
+        if not self.registered_hooks[layer][0] and not self.registered_hooks[layer][1]:
+            raise ValueError(&#34;Neither forward hook nor backward hook did register to layer: &#34; + str(layer))
+        elif not self.registered_hooks[layer][0]:
+            raise ValueError(&#34;Forward hook did not register to layer: &#34; + str(layer))
+        elif not self.registered_hooks[layer][1]:
+            raise ValueError(&#34;Backward hook did not register to layer: &#34; + str(layer) + &#34;, Check if the hook was registered to a layer that is skipped during backward and thus no gradients are computed&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>medcam.backends.base._BaseWrapper</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="medcam.backends.grad_cam_pp.GradCamPP" href="grad_cam_pp.html#medcam.backends.grad_cam_pp.GradCamPP">GradCamPP</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="medcam.backends.grad_cam.GradCAM.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, data)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calls the forward() of the base.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, data):
+    &#34;&#34;&#34;Calls the forward() of the base.&#34;&#34;&#34;
+    self._register_hooks()
+    return super(GradCAM, self).forward(data)</code></pre>
+</details>
+</dd>
+<dt id="medcam.backends.grad_cam.GradCAM.generate"><code class="name flex">
+<span>def <span class="ident">generate</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates an attention map.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate(self):
+    &#34;&#34;&#34;Generates an attention map.&#34;&#34;&#34;
+    self.remove_hook(forward=True, backward=True)
+    attention_maps = {}
+    if self._target_layers == &#34;auto&#34;:
+        layer, fmaps, grads = self._auto_layer_selection()
+        self._check_hooks(layer)
+        attention_map = self._generate_helper(fmaps, grads, layer).cpu().numpy()
+        attention_maps = {layer: attention_map}
+    else:
+        for layer in self.target_layers:
+            self._check_hooks(layer)
+            if self.registered_hooks[layer][0] and self.registered_hooks[layer][1]:
+                fmaps = self._find(self.fmap_pool, layer)
+                grads = self._find(self.grad_pool, layer)
+                attention_map = self._generate_helper(fmaps, grads, layer)
+                attention_maps[layer] = attention_map.cpu().numpy()
+    if not attention_maps:
+        raise ValueError(&#34;None of the hooks registered to the target layers&#34;)
+    return attention_maps</code></pre>
+</details>
+</dd>
+<dt id="medcam.backends.grad_cam.GradCAM.get_registered_hooks"><code class="name flex">
+<span>def <span class="ident">get_registered_hooks</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns every hook that was able to register to a layer.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_registered_hooks(self):
+    &#34;&#34;&#34;Returns every hook that was able to register to a layer.&#34;&#34;&#34;
+    registered_hooks = []
+    for layer in self.registered_hooks.keys():
+        if self.registered_hooks[layer][0] and self.registered_hooks[layer][1]:
+            registered_hooks.append(layer)
+    self.remove_hook(forward=True, backward=True)
+    if self._target_layers == &#39;full&#39; or self._target_layers == &#39;auto&#39;:
+        self.target_layers = registered_hooks
+    return registered_hooks</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="medcam.backends" href="index.html">medcam.backends</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="medcam.backends.grad_cam.GradCAM" href="#medcam.backends.grad_cam.GradCAM">GradCAM</a></code></h4>
+<ul class="">
+<li><code><a title="medcam.backends.grad_cam.GradCAM.forward" href="#medcam.backends.grad_cam.GradCAM.forward">forward</a></code></li>
+<li><code><a title="medcam.backends.grad_cam.GradCAM.generate" href="#medcam.backends.grad_cam.GradCAM.generate">generate</a></code></li>
+<li><code><a title="medcam.backends.grad_cam.GradCAM.get_registered_hooks" href="#medcam.backends.grad_cam.GradCAM.get_registered_hooks">get_registered_hooks</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

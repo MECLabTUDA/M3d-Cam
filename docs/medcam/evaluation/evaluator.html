@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>medcam.evaluation.evaluator API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>medcam.evaluation.evaluator</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from medcam.evaluation import evaluation_utils
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+
+class Evaluator():
+
+    def __init__(self, save_path, metric=&#34;wioa&#34;, threshold=&#39;otsu&#39;, layer_ordering=None):
+        &#34;&#34;&#34;
+        Evaluator class that evaluates attention maps with the corresponding ground truth masks.
+        Args:
+            save_path: The save path for the results.
+
+            metric: The metric to use.
+
+                    &#39;wioa&#39;: Weighted intersection over attention. How much of weighted total attention is inside the ground truth mask.
+
+                    &#39;ioa&#39;: Intersection over attention. How much of total attention is inside the ground truth mask.
+
+                    &#39;iou&#39;: Intersection over union.
+
+                    (A function): A metric function that takes the arguments attention map and ground truth mask.
+
+            threshold: A threshold used during evaluation for ignoring low attention. Most models have low amounts of attention everywhere in an attention map due to the nature of CNN-based models. The threshold can be used to ignore these low amounts if wanted.
+
+                    &#39;otsu&#39;: Uses the otsu algorithm to determine a threshold.
+
+                    (float): A value between 0 and 1 that is used as threshold.
+
+            layer_ordering: A list of layer names that is used for ordering the mean scores.
+        &#34;&#34;&#34;
+        self.scores = pd.DataFrame(columns=[&#39;evaluation&#39;, &#39;layer&#39;, &#39;class_label&#39;, &#39;name&#39;])
+        self.save_path = save_path
+        self.metric = metric
+        self.threshold = threshold
+        self.layer_ordering = layer_ordering
+
+    def comp_score(self, attention_map, mask, layer=None, class_label=None, name=None):
+        &#34;&#34;&#34;
+        Evaluates an attention maps with the corresponding ground truth mask.
+        Args:
+            attention_map: The attention map.
+            mask: The ground truth mask.
+            layer: The layer name.
+            class_label: The class label.
+            name: A name for better identification (e.g. the filename of the ground truth mask)
+
+        Returns: The evaluation score
+
+        &#34;&#34;&#34;
+        score = evaluation_utils.comp_score(attention_map, mask, self.metric, self.threshold)
+        self._add(score, layer, class_label, name)
+        return score
+
+    def _add(self, score, layer=None, class_label=None, name=None):
+        &#34;&#34;&#34;Adds a score to the score dataframe.&#34;&#34;&#34;
+        self.scores = self.scores.append({&#39;evaluation&#39;: score, &#39;layer&#39;: layer, &#39;class_label&#39;: class_label, &#39;name&#39;: name}, ignore_index=True)
+
+    def dump(self, mean_only=False, layer=None, class_label=None):
+        &#34;&#34;&#34;
+        Saves the scores and mean scores as an excel table.
+        Args:
+            mean_only: Save only the mean scores.
+            layer: Filter by a single layer.
+            class_label: Filter by a single class label.
+
+        &#34;&#34;&#34;
+        scores = self.scores
+        if layer is not None:
+            scores = scores[scores[&#39;layer&#39;]==layer]
+        if class_label is not None:
+            scores = scores[scores[&#39;class_label&#39;] == class_label]
+        mean_scores = self._comp_means(scores)
+        with pd.ExcelWriter(self.save_path + &#39;scores.xlsx&#39;) as writer:
+            if not mean_only:
+                scores.to_excel(writer, sheet_name=&#39;Scores&#39;, na_rep=&#39;NaN&#39;)
+            mean_scores.to_excel(writer, sheet_name=&#39;Mean Scores&#39;, na_rep=&#39;NaN&#39;)
+
+    def _comp_means(self, scores):
+        &#34;&#34;&#34;Computes the mean scores.&#34;&#34;&#34;
+        mean_scores = pd.DataFrame(columns=[&#39;mean_score&#39;, &#39;layer&#39;, &#39;class_label&#39;])
+        mean_score_list = []
+        unique_layers = pd.unique(scores[&#39;layer&#39;])
+        if self.layer_ordering is not None and unique_layers[0] != &#34;&#34;:
+            unique_layers = sorted(set(self.layer_ordering).intersection(unique_layers), key=lambda x: self.layer_ordering.index(x))
+        for unique_layer in unique_layers:
+            _scores = scores[scores[&#39;layer&#39;] == unique_layer]
+            unique_class_labels = pd.unique(_scores[&#39;class_label&#39;])
+            for unique_class_label in unique_class_labels:
+                __scores = _scores[_scores[&#39;class_label&#39;] == unique_class_label]
+                mean_score = __scores[&#39;evaluation&#39;].to_numpy().astype(np.float)
+                mean_score = mean_score[~np.isnan(mean_score)]
+                mean_score = np.mean(mean_score)
+                mean_score_list.append(mean_score)
+                mean_scores = mean_scores.append({&#39;mean_score&#39;: mean_score, &#39;layer&#39;: unique_layer, &#39;class_label&#39;: unique_class_label}, ignore_index=True)
+        self._plot_mean_scores(unique_layers, mean_score_list)
+        return mean_scores
+
+    def _plot_mean_scores(self, layers, mean_scores):
+        &#34;&#34;&#34;Plots the mean scores as a nice graph.&#34;&#34;&#34;
+        layers, mean_scores = self._reduce(layers, mean_scores)
+        fig, ax = plt.subplots(1)
+        plt.plot(range(len(layers)), mean_scores)
+        x_ticks = np.arange(len(layers))
+        ax.set_xticks(x_ticks)
+        ax.set_xticklabels(layers)
+        plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment=&#39;right&#39;)
+        fig.savefig(self.save_path + &#39;mean_scores.png&#39;, dpi=300)
+        fig.clf()
+
+    def _reduce(self, layers, mean_scores):
+        &#34;&#34;&#34;Reduces the number of total layers by removing sub layers. Except for the very first and last layer.&#34;&#34;&#34;
+        saved = [[layers[0], mean_scores[0]], [layers[len(layers)-1], mean_scores[len(layers)-1]]]
+        i = 0
+        while i &lt; len(layers):
+            j = 0
+            while i &lt; len(layers) and j &lt; len(layers):
+                if layers[i] in layers[j] and i != j:
+                    del layers[j]
+                    del mean_scores[j]
+                    if j &lt; i:
+                        i -= 1
+                else:
+                    j += 1
+            i += 1
+        layers.insert(0, saved[0][0])
+        mean_scores.insert(0, saved[0][1])
+        layers.append(saved[1][0])
+        mean_scores.append(saved[1][1])
+        return layers, mean_scores</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="medcam.evaluation.evaluator.Evaluator"><code class="flex name class">
+<span>class <span class="ident">Evaluator</span></span>
+<span>(</span><span>save_path, metric='wioa', threshold='otsu', layer_ordering=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Evaluator class that evaluates attention maps with the corresponding ground truth masks.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>save_path</code></strong></dt>
+<dd>The save path for the results.</dd>
+<dt><strong><code>metric</code></strong></dt>
+<dd>The metric to use.<pre><code>'wioa': Weighted intersection over attention. How much of weighted total attention is inside the ground truth mask.
+
+'ioa': Intersection over attention. How much of total attention is inside the ground truth mask.
+
+'iou': Intersection over union.
+
+(A function): A metric function that takes the arguments attention map and ground truth mask.
+</code></pre>
+</dd>
+<dt><strong><code>threshold</code></strong></dt>
+<dd>A threshold used during evaluation for ignoring low attention. Most models have low amounts of attention everywhere in an attention map due to the nature of CNN-based models. The threshold can be used to ignore these low amounts if wanted.<pre><code>'otsu': Uses the otsu algorithm to determine a threshold.
+
+(float): A value between 0 and 1 that is used as threshold.
+</code></pre>
+</dd>
+<dt><strong><code>layer_ordering</code></strong></dt>
+<dd>A list of layer names that is used for ordering the mean scores.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Evaluator():
+
+    def __init__(self, save_path, metric=&#34;wioa&#34;, threshold=&#39;otsu&#39;, layer_ordering=None):
+        &#34;&#34;&#34;
+        Evaluator class that evaluates attention maps with the corresponding ground truth masks.
+        Args:
+            save_path: The save path for the results.
+
+            metric: The metric to use.
+
+                    &#39;wioa&#39;: Weighted intersection over attention. How much of weighted total attention is inside the ground truth mask.
+
+                    &#39;ioa&#39;: Intersection over attention. How much of total attention is inside the ground truth mask.
+
+                    &#39;iou&#39;: Intersection over union.
+
+                    (A function): A metric function that takes the arguments attention map and ground truth mask.
+
+            threshold: A threshold used during evaluation for ignoring low attention. Most models have low amounts of attention everywhere in an attention map due to the nature of CNN-based models. The threshold can be used to ignore these low amounts if wanted.
+
+                    &#39;otsu&#39;: Uses the otsu algorithm to determine a threshold.
+
+                    (float): A value between 0 and 1 that is used as threshold.
+
+            layer_ordering: A list of layer names that is used for ordering the mean scores.
+        &#34;&#34;&#34;
+        self.scores = pd.DataFrame(columns=[&#39;evaluation&#39;, &#39;layer&#39;, &#39;class_label&#39;, &#39;name&#39;])
+        self.save_path = save_path
+        self.metric = metric
+        self.threshold = threshold
+        self.layer_ordering = layer_ordering
+
+    def comp_score(self, attention_map, mask, layer=None, class_label=None, name=None):
+        &#34;&#34;&#34;
+        Evaluates an attention maps with the corresponding ground truth mask.
+        Args:
+            attention_map: The attention map.
+            mask: The ground truth mask.
+            layer: The layer name.
+            class_label: The class label.
+            name: A name for better identification (e.g. the filename of the ground truth mask)
+
+        Returns: The evaluation score
+
+        &#34;&#34;&#34;
+        score = evaluation_utils.comp_score(attention_map, mask, self.metric, self.threshold)
+        self._add(score, layer, class_label, name)
+        return score
+
+    def _add(self, score, layer=None, class_label=None, name=None):
+        &#34;&#34;&#34;Adds a score to the score dataframe.&#34;&#34;&#34;
+        self.scores = self.scores.append({&#39;evaluation&#39;: score, &#39;layer&#39;: layer, &#39;class_label&#39;: class_label, &#39;name&#39;: name}, ignore_index=True)
+
+    def dump(self, mean_only=False, layer=None, class_label=None):
+        &#34;&#34;&#34;
+        Saves the scores and mean scores as an excel table.
+        Args:
+            mean_only: Save only the mean scores.
+            layer: Filter by a single layer.
+            class_label: Filter by a single class label.
+
+        &#34;&#34;&#34;
+        scores = self.scores
+        if layer is not None:
+            scores = scores[scores[&#39;layer&#39;]==layer]
+        if class_label is not None:
+            scores = scores[scores[&#39;class_label&#39;] == class_label]
+        mean_scores = self._comp_means(scores)
+        with pd.ExcelWriter(self.save_path + &#39;scores.xlsx&#39;) as writer:
+            if not mean_only:
+                scores.to_excel(writer, sheet_name=&#39;Scores&#39;, na_rep=&#39;NaN&#39;)
+            mean_scores.to_excel(writer, sheet_name=&#39;Mean Scores&#39;, na_rep=&#39;NaN&#39;)
+
+    def _comp_means(self, scores):
+        &#34;&#34;&#34;Computes the mean scores.&#34;&#34;&#34;
+        mean_scores = pd.DataFrame(columns=[&#39;mean_score&#39;, &#39;layer&#39;, &#39;class_label&#39;])
+        mean_score_list = []
+        unique_layers = pd.unique(scores[&#39;layer&#39;])
+        if self.layer_ordering is not None and unique_layers[0] != &#34;&#34;:
+            unique_layers = sorted(set(self.layer_ordering).intersection(unique_layers), key=lambda x: self.layer_ordering.index(x))
+        for unique_layer in unique_layers:
+            _scores = scores[scores[&#39;layer&#39;] == unique_layer]
+            unique_class_labels = pd.unique(_scores[&#39;class_label&#39;])
+            for unique_class_label in unique_class_labels:
+                __scores = _scores[_scores[&#39;class_label&#39;] == unique_class_label]
+                mean_score = __scores[&#39;evaluation&#39;].to_numpy().astype(np.float)
+                mean_score = mean_score[~np.isnan(mean_score)]
+                mean_score = np.mean(mean_score)
+                mean_score_list.append(mean_score)
+                mean_scores = mean_scores.append({&#39;mean_score&#39;: mean_score, &#39;layer&#39;: unique_layer, &#39;class_label&#39;: unique_class_label}, ignore_index=True)
+        self._plot_mean_scores(unique_layers, mean_score_list)
+        return mean_scores
+
+    def _plot_mean_scores(self, layers, mean_scores):
+        &#34;&#34;&#34;Plots the mean scores as a nice graph.&#34;&#34;&#34;
+        layers, mean_scores = self._reduce(layers, mean_scores)
+        fig, ax = plt.subplots(1)
+        plt.plot(range(len(layers)), mean_scores)
+        x_ticks = np.arange(len(layers))
+        ax.set_xticks(x_ticks)
+        ax.set_xticklabels(layers)
+        plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment=&#39;right&#39;)
+        fig.savefig(self.save_path + &#39;mean_scores.png&#39;, dpi=300)
+        fig.clf()
+
+    def _reduce(self, layers, mean_scores):
+        &#34;&#34;&#34;Reduces the number of total layers by removing sub layers. Except for the very first and last layer.&#34;&#34;&#34;
+        saved = [[layers[0], mean_scores[0]], [layers[len(layers)-1], mean_scores[len(layers)-1]]]
+        i = 0
+        while i &lt; len(layers):
+            j = 0
+            while i &lt; len(layers) and j &lt; len(layers):
+                if layers[i] in layers[j] and i != j:
+                    del layers[j]
+                    del mean_scores[j]
+                    if j &lt; i:
+                        i -= 1
+                else:
+                    j += 1
+            i += 1
+        layers.insert(0, saved[0][0])
+        mean_scores.insert(0, saved[0][1])
+        layers.append(saved[1][0])
+        mean_scores.append(saved[1][1])
+        return layers, mean_scores</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="medcam.evaluation.evaluator.Evaluator.comp_score"><code class="name flex">
+<span>def <span class="ident">comp_score</span></span>(<span>self, attention_map, mask, layer=None, class_label=None, name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Evaluates an attention maps with the corresponding ground truth mask.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>attention_map</code></strong></dt>
+<dd>The attention map.</dd>
+<dt><strong><code>mask</code></strong></dt>
+<dd>The ground truth mask.</dd>
+<dt><strong><code>layer</code></strong></dt>
+<dd>The layer name.</dd>
+<dt><strong><code>class_label</code></strong></dt>
+<dd>The class label.</dd>
+<dt><strong><code>name</code></strong></dt>
+<dd>A name for better identification (e.g. the filename of the ground truth mask)</dd>
+<dt><strong><code>Returns</code></strong> :&ensp;<code>The evaluation score</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def comp_score(self, attention_map, mask, layer=None, class_label=None, name=None):
+    &#34;&#34;&#34;
+    Evaluates an attention maps with the corresponding ground truth mask.
+    Args:
+        attention_map: The attention map.
+        mask: The ground truth mask.
+        layer: The layer name.
+        class_label: The class label.
+        name: A name for better identification (e.g. the filename of the ground truth mask)
+
+    Returns: The evaluation score
+
+    &#34;&#34;&#34;
+    score = evaluation_utils.comp_score(attention_map, mask, self.metric, self.threshold)
+    self._add(score, layer, class_label, name)
+    return score</code></pre>
+</details>
+</dd>
+<dt id="medcam.evaluation.evaluator.Evaluator.dump"><code class="name flex">
+<span>def <span class="ident">dump</span></span>(<span>self, mean_only=False, layer=None, class_label=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Saves the scores and mean scores as an excel table.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>mean_only</code></strong></dt>
+<dd>Save only the mean scores.</dd>
+<dt><strong><code>layer</code></strong></dt>
+<dd>Filter by a single layer.</dd>
+<dt><strong><code>class_label</code></strong></dt>
+<dd>Filter by a single class label.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dump(self, mean_only=False, layer=None, class_label=None):
+    &#34;&#34;&#34;
+    Saves the scores and mean scores as an excel table.
+    Args:
+        mean_only: Save only the mean scores.
+        layer: Filter by a single layer.
+        class_label: Filter by a single class label.
+
+    &#34;&#34;&#34;
+    scores = self.scores
+    if layer is not None:
+        scores = scores[scores[&#39;layer&#39;]==layer]
+    if class_label is not None:
+        scores = scores[scores[&#39;class_label&#39;] == class_label]
+    mean_scores = self._comp_means(scores)
+    with pd.ExcelWriter(self.save_path + &#39;scores.xlsx&#39;) as writer:
+        if not mean_only:
+            scores.to_excel(writer, sheet_name=&#39;Scores&#39;, na_rep=&#39;NaN&#39;)
+        mean_scores.to_excel(writer, sheet_name=&#39;Mean Scores&#39;, na_rep=&#39;NaN&#39;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="medcam.evaluation" href="index.html">medcam.evaluation</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="medcam.evaluation.evaluator.Evaluator" href="#medcam.evaluation.evaluator.Evaluator">Evaluator</a></code></h4>
+<ul class="">
+<li><code><a title="medcam.evaluation.evaluator.Evaluator.comp_score" href="#medcam.evaluation.evaluator.Evaluator.comp_score">comp_score</a></code></li>
+<li><code><a title="medcam.evaluation.evaluator.Evaluator.dump" href="#medcam.evaluation.evaluator.Evaluator.dump">dump</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
