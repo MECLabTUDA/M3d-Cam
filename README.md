@@ -1,6 +1,6 @@
 # M3d-CAM
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-available-blue.svg)](https://???-g.github.io/M3d-CAM)
+[![Docs](https://img.shields.io/badge/docs-available-blue.svg)](https://M3d-Cam.github.io/M3d-CAM)
 [![PyPI version](https://badge.fury.io/py/medcam.svg)](https://badge.fury.io/py/medcam)
 ![Python package](https://github.com/???/M3d-CAM/workflows/Python%20package/badge.svg)
 
