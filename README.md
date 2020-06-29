@@ -1,6 +1,6 @@
 # M3d-CAM
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-available-blue.svg)](https://M3d-Cam.github.io/M3d-CAM)
+[![Docs](https://img.shields.io/badge/docs-available-blue.svg)](https://meclabtuda.github.io/M3d-Cam/)
 [![PyPI version](https://badge.fury.io/py/medcam.svg)](https://badge.fury.io/py/medcam) 
 ![Python package](https://github.com/MECLabTUDA/M3d-Cam/workflows/Python%20package/badge.svg)
 
@@ -25,7 +25,7 @@ model = medcam.inject(model, output_dir="attention_maps", save_maps=True)
 
 ## Documentation
 M3d-CAM is fully documented and you can view the documentation under: <br/> 
-https://M3d-Cam.github.io/M3d-CAM
+https://meclabtuda.github.io/M3d-Cam/
 
 ## Examples
 

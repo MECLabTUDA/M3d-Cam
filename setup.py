@@ -5,11 +5,11 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="medcam",
-    version="0.1",
+    version="0.1.01",
     author="Karol Gotkowski",
     author_email="KarolGotkowski@gmx.de",
-    description="An easy to use framework that makes model predictions more interpretable for humans.",
-    long_description="An easy to use framework that makes model predictions more interpretable for humans. M3d-CAM allows the generation of attention maps with multiple methods like Guided Backpropagation, Grad-Cam, Guided Grad-Cam and Grad-Cam++.",
+    description="An easy to use library that makes model predictions more interpretable for humans.",
+    long_description="An easy to use library that makes model predictions more interpretable for humans. M3d-CAM allows the generation of attention maps with multiple methods like Guided Backpropagation, Grad-Cam, Guided Grad-Cam and Grad-Cam++.",
     long_description_content_type="text/markdown",
     url="",
     packages=setuptools.find_packages(),
