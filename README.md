@@ -70,3 +70,36 @@ TODO
 
 ### 3D Segmentation
 You can find a Jupyter Notebook on how to use M3d-CAM with the nnUNet for handeling 3D data at `demos/Medcam_nnUNet_demo.ipynb` or opening it directly in Google Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1b6LMbSM3dvpCS4jEsWVpmgTbsR_rVPUF?usp=sharing)
+
+
+## Citations
+If you are using M3D-CAM for your article, please consider citing this tech report and the following papers:
+```
+@misc{2007.00453,
+Author = {Karol Gotkowski and Camila Gonzalez and Andreas Bucher and Anirban Mukhopadhyay},
+Title = {M3d-CAM: A PyTorch library to generate 3D data attention maps for medical deep learning},
+Year = {2020},
+Eprint = {arXiv:2007.00453},
+}
+```
+
+```
+@inproceedings{selvaraju2017grad,
+  title={Grad-cam: Visual explanations from deep networks via gradient-based localization},
+  author={Selvaraju, Ramprasaath R and Cogswell, Michael and Das, Abhishek and Vedantam, Ramakrishna and Parikh, Devi and Batra, Dhruv},
+  booktitle={Proceedings of the IEEE international conference on computer vision},
+  pages={618--626},
+  year={2017}
+}
+```
+
+```
+@inproceedings{chattopadhay2018grad,
+  title={Grad-cam++: Generalized gradient-based visual explanations for deep convolutional networks},
+  author={Chattopadhay, Aditya and Sarkar, Anirban and Howlader, Prantik and Balasubramanian, Vineeth N},
+  booktitle={2018 IEEE Winter Conference on Applications of Computer Vision (WACV)},
+  pages={839--847},
+  year={2018},
+  organization={IEEE}
+}
+```
