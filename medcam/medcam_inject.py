@@ -133,7 +133,7 @@ def inject(model, output_dir=None, backend='medcam', layer='auto', label=None, d
     medcam_dict['enabled'] = enabled
     setattr(model_clone, 'medcam_dict', medcam_dict)
 
-    if output_dir is None and (save_scores is not None or save_maps is not None or save_pickle is not None or evaluate):
+    if output_dir is None and (save_scores or save_maps or save_pickle or evaluate):
         raise ValueError("output_dir needs to be set if save_scores, save_maps, save_pickle or evaluate is set to true")
 
     # Append methods methods to the model
@@ -255,7 +255,7 @@ def _assign_backend(backend, model, target_layers, postprocessor, retain_graph):
     """Assigns a chosen backend."""
     if backend == "gbp":
         return GuidedBackPropagation(model=model, postprocessor=postprocessor, retain_graph=retain_graph), False
-    elif backend == "medcam":
+    elif backend == "gcam":
         return GradCAM(model=model, target_layers=target_layers, postprocessor=postprocessor, retain_graph=retain_graph), True
     elif backend == "ggcam":
         return GuidedGradCam(model=model, target_layers=target_layers, postprocessor=postprocessor, retain_graph=retain_graph), False
