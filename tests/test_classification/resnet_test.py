@@ -52,7 +52,7 @@ class TestClassification(unittest.TestCase):
 
     def test_gcam(self):
         layer = 'layer4'
-        model = medcam.inject(self.model, output_dir=os.path.join(self.current_path, 'results/resnet152/test_gcam'), backend='medcam', layer=layer,
+        model = medcam.inject(self.model, output_dir=os.path.join(self.current_path, 'results/resnet152/test_gcam'), backend='gcam', layer=layer,
                               evaluate=False, save_scores=False, save_maps=True, save_pickle=False)
         model.eval()
         data_loader = DataLoader(self.dataset, batch_size=1, shuffle=False)
@@ -69,7 +69,7 @@ class TestClassification(unittest.TestCase):
 
     def test_gcam_overlay(self):
         layer = 'layer4'
-        model = medcam.inject(self.model, output_dir=os.path.join(self.current_path, 'results/resnet152/test_gcam_overlay'), backend='medcam', layer=layer,
+        model = medcam.inject(self.model, output_dir=os.path.join(self.current_path, 'results/resnet152/test_gcam_overlay'), backend='gcam', layer=layer,
                               evaluate=False, save_scores=False, save_maps=True, save_pickle=False)
         model.eval()
         data_loader = DataLoader(self.dataset, batch_size=1, shuffle=False)

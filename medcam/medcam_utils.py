@@ -15,7 +15,7 @@ def save_attention_map(filename, attention_map, heatmap, raw_input):
     Args:
         filename: The save path, including the name, excluding the file extension.
         attention_map: The attention map in HxW or DxHxW format.
-        heatmap: If the attention map should be saved as a heatmap. True for medcam and gcampp. False for gbp and ggcam.
+        heatmap: If the attention map should be saved as a heatmap. True for gcam and gcampp. False for gbp and ggcam.
     """
     dim = len(attention_map.shape)
     attention_map = normalize(attention_map.astype(np.float))

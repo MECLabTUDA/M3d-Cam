@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="medcam",
-    version="0.1.03",
+    version="0.1.04",
     author="Karol Gotkowski",
     author_email="KarolGotkowski@gmx.de",
     description="An easy to use library that makes model predictions more interpretable for humans.",

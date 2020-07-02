@@ -43,7 +43,7 @@ class TestSegmentation(unittest.TestCase):
     def test_gcam(self):
         layer = 'full'
         metric = 'wioa'
-        model = medcam.inject(self.model, output_dir=os.path.join(self.current_path, 'results/unet_seg/medcam'), backend='medcam', layer=layer,
+        model = medcam.inject(self.model, output_dir=os.path.join(self.current_path, 'results/unet_seg/gcam'), backend='gcam', layer=layer,
                               evaluate=True, save_scores=False, save_maps=True, save_pickle=False, metric=metric)
         model.eval()
         data_loader = DataLoader(self.dataset, batch_size=1, shuffle=False)
@@ -62,7 +62,7 @@ class TestSegmentation(unittest.TestCase):
     def test_gcam_overlay(self):
         layer = 'full'
         metric = 'wioa'
-        model = medcam.inject(self.model, output_dir=os.path.join(self.current_path, 'results/unet_seg/gcam_overlay'), backend='medcam', layer=layer,
+        model = medcam.inject(self.model, output_dir=os.path.join(self.current_path, 'results/unet_seg/gcam_overlay'), backend='gcam', layer=layer,
                               evaluate=True, save_scores=False, save_maps=True, save_pickle=False, metric=metric)
         model.eval()
         data_loader = DataLoader(self.dataset, batch_size=1, shuffle=False)
