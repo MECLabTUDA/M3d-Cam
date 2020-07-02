@@ -3,6 +3,7 @@
 [![Docs](https://img.shields.io/badge/docs-available-blue.svg)](https://meclabtuda.github.io/M3d-Cam/)
 [![PyPI version](https://badge.fury.io/py/medcam.svg)](https://badge.fury.io/py/medcam) 
 ![Python package](https://github.com/MECLabTUDA/M3d-Cam/workflows/Python%20package/badge.svg)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14XXonVYDFrfLd27kKx03nhxJaIfZR9cR?usp=sharing)
 
 M3d-CAM is an easy to use Pytorch library that allows the generation of **3D/ 2D attention maps** for both **classification and segmentation** with multiple methods such as Guided Backpropagation, 
 Grad-Cam, Guided Grad-Cam and Grad-Cam++. <br/> 
