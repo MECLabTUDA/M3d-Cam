@@ -12,7 +12,7 @@ from medcam.evaluation.evaluator import Evaluator
 import copy
 import numpy as np
 
-def inject(model, output_dir=None, backend='medcam', layer='auto', label=None, data_shape='default',
+def inject(model, output_dir=None, backend='gcam', layer='auto', label=None, data_shape='default',
            save_maps=False, save_pickle=False, save_scores=False, evaluate=False, metric='wioa', threshold='otsu', retain_graph=False,
            return_score=False, replace=False, cudnn=True, enabled=True):
     """
