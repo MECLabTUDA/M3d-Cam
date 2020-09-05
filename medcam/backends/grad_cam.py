@@ -32,8 +32,9 @@ class GradCAM(_BaseWrapper):
             def forward_hook_(module, input, output):
                 self.registered_hooks[key][0] = True
                 # Save featuremaps
-                if not isinstance(output, torch.Tensor):
-                    print("Cannot hook layer {} because its gradients are not in tensor format".format(key))
+                # if not isinstance(output, torch.Tensor):
+                #     print("Cannot hook layer {} because its gradients are not in tensor format".format(key))
+                output = medcam_utils.unpack_tensors_with_gradients(output)
 
                 if not ENABLE_MODULE_HOOK:
                     def _backward_hook(grad_out):
@@ -44,9 +45,24 @@ class GradCAM(_BaseWrapper):
                     # Register backward hook directly to the output
                     # Handle must be removed afterwards otherwise tensor is not freed
                     if not self.registered_hooks[key][1]:
-                        _backward_handle = output.register_hook(_backward_hook)
-                        self.backward_handlers.append(_backward_handle)
-                self.fmap_pool[key] = output.detach()
+                        if len(output) == 1:
+                            _backward_handle = output[0].register_hook(_backward_hook)
+                            self.backward_handlers.append(_backward_handle)
+                        else:
+                            for element in output:
+                                _backward_handle = element.register_hook(_backward_hook)
+                                self.backward_handlers.append(_backward_handle)
+                        # _backward_handle = output.register_hook(_backward_hook)
+                        # self.backward_handlers.append(_backward_handle)
+
+                if len(output) == 1:
+                    self.fmap_pool[key] = output[0].detach()
+                else:
+                    elements = []
+                    for element in output:
+                        elements.append(element.detach())
+                    self.fmap_pool[key] = elements
+                # self.fmap_pool[key] = output.detach()
 
             return forward_hook_
 
@@ -56,7 +72,15 @@ class GradCAM(_BaseWrapper):
             def backward_hook_(module, grad_in, grad_out):
                 self.registered_hooks[key][1] = True
                 # Save the gradients correspond to the featuremaps
-                self.grad_pool[key] = grad_out[0].detach()  # TODO: Still correct with batch size > 1?
+                grad_out = medcam_utils.unpack_tensors_with_gradients(grad_out[0])
+                if len(grad_out) == 1:
+                    self.grad_pool[key] = grad_out[0].detach()
+                else:
+                    elements = []
+                    for element in grad_out:
+                        elements.append(element.detach())
+                    self.grad_pool[key] = elements
+                # self.grad_pool[key] = grad_out[0].detach()  # TODO: Still correct with batch size > 1?
 
             return backward_hook_
 

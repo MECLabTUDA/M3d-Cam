@@ -41,7 +41,7 @@ def save_attention_map(filename, attention_map, heatmap, raw_input):
     Args:
         filename: The save path, including the name, excluding the file extension.
         attention_map: The attention map in HxW or DxHxW format.
-        heatmap: If the attention map should be saved as a heatmap. True for medcam and gcampp. False for gbp and ggcam.
+        heatmap: If the attention map should be saved as a heatmap. True for gcam and gcampp. False for gbp and ggcam.
     &#34;&#34;&#34;
     dim = len(attention_map.shape)
     attention_map = normalize(attention_map.astype(np.float))
@@ -206,7 +206,25 @@ def overlay(raw_input, attention_map):
     attention_map = cm.jet_r(attention_map)[..., :3]
     attention_map = (attention_map.astype(np.float) + raw_input.astype(np.float)) / 2
     attention_map *= 255
-    return attention_map</code></pre>
+    return attention_map
+
+def unpack_tensors_with_gradients(tensors):
+    unpacked_tensors = []
+    if isinstance(tensors, torch.Tensor):
+        if tensors.requires_grad:
+            return [tensors]
+        else:
+            return []
+    elif isinstance(tensors, dict):
+        for value in tensors.values():
+            unpacked_tensors.extend(unpack_tensors_with_gradients(value))
+        return unpacked_tensors
+    elif isinstance(tensors, list):
+        for value in tensors:
+            unpacked_tensors.extend(unpack_tensors_with_gradients(value))
+        return unpacked_tensors
+    else:
+        raise ValueError(&#34;Cannot unpack unknown data type.&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -447,7 +465,7 @@ def overlay(raw_input, attention_map):
 <dt><strong><code>attention_map</code></strong></dt>
 <dd>The attention map in HxW or DxHxW format.</dd>
 <dt><strong><code>heatmap</code></strong></dt>
-<dd>If the attention map should be saved as a heatmap. True for medcam and gcampp. False for gbp and ggcam.</dd>
+<dd>If the attention map should be saved as a heatmap. True for gcam and gcampp. False for gbp and ggcam.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -459,12 +477,40 @@ def overlay(raw_input, attention_map):
     Args:
         filename: The save path, including the name, excluding the file extension.
         attention_map: The attention map in HxW or DxHxW format.
-        heatmap: If the attention map should be saved as a heatmap. True for medcam and gcampp. False for gbp and ggcam.
+        heatmap: If the attention map should be saved as a heatmap. True for gcam and gcampp. False for gbp and ggcam.
     &#34;&#34;&#34;
     dim = len(attention_map.shape)
     attention_map = normalize(attention_map.astype(np.float))
     attention_map = generate_attention_map(attention_map, heatmap, dim, raw_input)
     _save_file(filename, attention_map, dim)</code></pre>
+</details>
+</dd>
+<dt id="medcam.medcam_utils.unpack_tensors_with_gradients"><code class="name flex">
+<span>def <span class="ident">unpack_tensors_with_gradients</span></span>(<span>tensors)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unpack_tensors_with_gradients(tensors):
+    unpacked_tensors = []
+    if isinstance(tensors, torch.Tensor):
+        if tensors.requires_grad:
+            return [tensors]
+        else:
+            return []
+    elif isinstance(tensors, dict):
+        for value in tensors.values():
+            unpacked_tensors.extend(unpack_tensors_with_gradients(value))
+        return unpacked_tensors
+    elif isinstance(tensors, list):
+        for value in tensors:
+            unpacked_tensors.extend(unpack_tensors_with_gradients(value))
+        return unpacked_tensors
+    else:
+        raise ValueError(&#34;Cannot unpack unknown data type.&#34;)</code></pre>
 </details>
 </dd>
 </dl>
@@ -496,6 +542,7 @@ def overlay(raw_input, attention_map):
 <li><code><a title="medcam.medcam_utils.overlay" href="#medcam.medcam_utils.overlay">overlay</a></code></li>
 <li><code><a title="medcam.medcam_utils.prod" href="#medcam.medcam_utils.prod">prod</a></code></li>
 <li><code><a title="medcam.medcam_utils.save_attention_map" href="#medcam.medcam_utils.save_attention_map">save_attention_map</a></code></li>
+<li><code><a title="medcam.medcam_utils.unpack_tensors_with_gradients" href="#medcam.medcam_utils.unpack_tensors_with_gradients">unpack_tensors_with_gradients</a></code></li>
 </ul>
 </li>
 </ul>

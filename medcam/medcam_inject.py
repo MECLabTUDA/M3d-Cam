@@ -25,7 +25,7 @@ def inject(model, output_dir=None, backend='gcam', layer='auto', label=None, dat
 
                 'gbp': Guided-Backpropagation
 
-                'medcam': Grad-Cam
+                'gcam': Grad-Cam
 
                 'ggcam': Guided-Grad-Cam
 

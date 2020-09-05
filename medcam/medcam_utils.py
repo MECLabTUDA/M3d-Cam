@@ -181,3 +181,21 @@ def overlay(raw_input, attention_map):
     attention_map = (attention_map.astype(np.float) + raw_input.astype(np.float)) / 2
     attention_map *= 255
     return attention_map
+
+def unpack_tensors_with_gradients(tensors):
+    unpacked_tensors = []
+    if isinstance(tensors, torch.Tensor):
+        if tensors.requires_grad:
+            return [tensors]
+        else:
+            return []
+    elif isinstance(tensors, dict):
+        for value in tensors.values():
+            unpacked_tensors.extend(unpack_tensors_with_gradients(value))
+        return unpacked_tensors
+    elif isinstance(tensors, list):
+        for value in tensors:
+            unpacked_tensors.extend(unpack_tensors_with_gradients(value))
+        return unpacked_tensors
+    else:
+        raise ValueError("Cannot unpack unknown data type.")
