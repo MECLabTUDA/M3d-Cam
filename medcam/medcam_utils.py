@@ -150,12 +150,15 @@ def interpolate(data, shape, squeeze=False):
 
 def _interpolate_tensor(data, shape, squeeze):
     """Interpolates data to the size of a given shape. Optionally squeezes away the batch and channel dim if the data was given in HxW or DxHxW format."""
+    _squeeze = 0
     if (len(shape) == 2 and len(data.shape) == 2) or ((len(shape) == 3 and len(data.shape) == 3)):  # Add batch and channel dim
         data = data.unsqueeze(0).unsqueeze(0)
         _squeeze = 2
     elif (len(shape) == 2 and len(data.shape) == 3) or ((len(shape) == 3 and len(data.shape) == 4)):  # Add batch dim
         data = data.unsqueeze(0)
         _squeeze = 1
+
+        
     if len(shape) == 2:
         data = F.interpolate(data, shape, mode="bilinear", align_corners=False)
     else:
