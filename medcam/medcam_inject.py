@@ -91,7 +91,7 @@ def inject(model, output_dir=None, backend='gcam', layer='auto', label=None, dat
     """
 
     if _already_injected(model):
-        return
+        return model
 
     if not cudnn:
         torch.backends.cudnn.enabled = False
