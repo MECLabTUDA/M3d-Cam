@@ -169,10 +169,10 @@ def get_attention_map(self):
     """Returns the current attention map."""
     return self.medcam_dict['current_attention_map']
 
-def save_attention_map(self, attention_map):
+def save_attention_map(self, attention_map, raw_input=None):
     """Saves an attention map."""
     medcam_utils.save_attention_map(filename=self.medcam_dict['output_dir'] + "/" + self.medcam_dict['current_layer'] + "/attention_map_" +
-                                             str(self.medcam_dict['counter']), attention_map=attention_map, heatmap=self.medcam_dict['heatmap'])
+                                             str(self.medcam_dict['counter']), attention_map=attention_map, heatmap=bool(raw_input is not None), raw_input=raw_input)
     self.medcam_dict['counter'] += 1
 
 def replace_output(self, replace):
