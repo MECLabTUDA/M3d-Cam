@@ -147,7 +147,7 @@ class GradCAM(_BaseWrapper):
                 if (len(fmaps.shape) == 4 and len(grads.shape) == 4 and fmaps.shape[2] > 1 and fmaps.shape[3] > 1 and grads.shape[2] > 1 and grads.shape[3] > 1) or \
                     (len(fmaps.shape) == 5 and len(grads.shape) == 5 and fmaps.shape[2] > 1 and fmaps.shape[3] > 1 and fmaps.shape[4] > 1 and grads.shape[2] > 1 and grads.shape[3] > 1 and grads.shape[4] > 1):
                     if not self.printed_selected_layer:
-                        print("Selected module layer: {}".format(layer))
+                        # print("Selected module layer: {}".format(layer))
                         self.printed_selected_layer = True
                     found_valid_layer = True
                     break
