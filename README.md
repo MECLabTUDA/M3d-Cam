@@ -6,7 +6,7 @@
 ![Python package](https://github.com/MECLabTUDA/M3d-Cam/workflows/Python%20package/badge.svg)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14XXonVYDFrfLd27kKx03nhxJaIfZR9cR?usp=sharing)
 
-M3d-CAM is an easy to use Pytorch library that allows the generation of **3D/ 2D attention maps** for both **classification and segmentation** with multiple methods such as Guided Backpropagation, 
+M3d-CAM is an easy to use PyTorch library that allows the generation of **3D/ 2D attention maps** for both **classification and segmentation** with multiple methods such as Guided Backpropagation, 
 Grad-Cam, Guided Grad-Cam and Grad-Cam++. <br/> 
 All you need to add to your project is a **single line of code**: <br/> 
 ```python
@@ -22,7 +22,7 @@ model = medcam.inject(model, output_dir="attention_maps", save_maps=True)
 * Option for automatic layer selection
 
 ## Installation
-* Install Pytorch from https://pytorch.org/get-started/locally/
+* Install PyTorch from https://pytorch.org/get-started/locally/
 * Install M3d-CAM via pip with: `pip install medcam`
 * Install M3d-CAM via conda with: `conda install -c conda-forge medcam`
 
