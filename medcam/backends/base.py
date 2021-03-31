@@ -58,7 +58,6 @@ class _BaseWrapper():
                 label = torch.argmax(output, dim=1).item()
         if callable(label):
             mask = label(output) * 1.0
-            print(mask.dtype)
         else:
             mask = torch.zeros(output.shape).to(self.device)
             mask[:, label] = 1

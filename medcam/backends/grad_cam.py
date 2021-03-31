@@ -25,6 +25,7 @@ class GradCAM(_BaseWrapper):
         elif isinstance(target_layers, str):
             target_layers = [target_layers]
         self.target_layers = target_layers
+        self.printed_selected_layer = False
 
     def _register_hooks(self):
         """Registers the forward and backward hooks to the layers."""
@@ -135,7 +136,6 @@ class GradCAM(_BaseWrapper):
         module_names = self.layers(reverse=True)
         found_valid_layer = False
 
-        counter = 0
         for layer in module_names:
             try:
                 fmaps = self._find(self.fmap_pool, layer)
@@ -143,17 +143,20 @@ class GradCAM(_BaseWrapper):
                 nonzeros = np.count_nonzero(grads.detach().cpu().numpy())  # TODO: Add except here with description, replace nonzero with sum == 0?
                 self._compute_grad_weights(grads)
                 if nonzeros == 0 or not isinstance(fmaps, torch.Tensor) or not isinstance(grads, torch.Tensor):
-                    counter += 1
                     continue
-                print("Selected module layer: {}".format(layer))
-                found_valid_layer = True
-                break
+                if (len(fmaps.shape) == 4 and len(grads.shape) == 4 and fmaps.shape[2] > 1 and fmaps.shape[3] > 1 and grads.shape[2] > 1 and grads.shape[3] > 1) or \
+                    (len(fmaps.shape) == 5 and len(grads.shape) == 5 and fmaps.shape[2] > 1 and fmaps.shape[3] > 1 and fmaps.shape[4] > 1 and grads.shape[2] > 1 and grads.shape[3] > 1 and grads.shape[4] > 1):
+                    if not self.printed_selected_layer:
+                        print("Selected module layer: {}".format(layer))
+                        self.printed_selected_layer = True
+                    found_valid_layer = True
+                    break
             except ValueError:
-                counter += 1
+                pass
             except RuntimeError:
-                counter += 1
+                pass
             except IndexError:
-                counter += 1
+                pass
 
         if not found_valid_layer:
             raise ValueError("Could not find a valid layer. "
