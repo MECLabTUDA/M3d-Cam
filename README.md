@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-available-blue.svg)](https://meclabtuda.github.io/M3d-Cam/)
 [![PyPI version](https://badge.fury.io/py/medcam.svg)](https://badge.fury.io/py/medcam) 
-[![Conda Install](hhttps://anaconda.org/conda-forge/medcam/badges/installer/conda.svg)](https://anaconda.org/conda-forge/medcam) 
+[![Install](https://anaconda.org/conda-forge/medcam/badges/installer/conda.svg)](https://anaconda.org/conda-forge/medcam) 
 ![Python package](https://github.com/MECLabTUDA/M3d-Cam/workflows/Python%20package/badge.svg)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14XXonVYDFrfLd27kKx03nhxJaIfZR9cR?usp=sharing)
 
