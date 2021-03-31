@@ -14,7 +14,7 @@ import numpy as np
 
 def inject(model, output_dir=None, backend='gcam', layer='auto', label=None, data_shape='default',
            save_maps=False, save_pickle=False, save_scores=False, evaluate=False, metric='wioa', threshold='otsu', retain_graph=False,
-           return_score=False, replace=False, cudnn=True, enabled=True):
+           return_score=False, replace=False, return_attention=False, cudnn=True, enabled=True):
     """
     Injects a model with medcam functionality to extract attention maps from it. The model can be used as usual.
     Whenever model(input) or model.forward(input) is called medcam will extract the corresponding attention maps.
@@ -82,6 +82,8 @@ def inject(model, output_dir=None, backend='gcam', layer='auto', label=None, dat
 
         replace: If the model output should be replaced with the extracted attention map.
 
+        return_attention: If the attention map should be returned along with the unmodified model output.
+
         cudnn: If cudnn should be disabled. Some models (e.g. LSTMs) crash when using medcam with enabled cudnn.
 
         enabled: If medcam should be enabled.
@@ -119,6 +121,7 @@ def inject(model, output_dir=None, backend='gcam', layer='auto', label=None, dat
     medcam_dict['metric'] = metric
     medcam_dict['return_score'] = return_score
     medcam_dict['_replace_output'] = replace
+    medcam_dict['return_attention'] = return_attention
     medcam_dict['threshold'] = threshold
     medcam_dict['label'] = label
     medcam_dict['channels'] = 1  # TODO: Remove in a later version
@@ -216,6 +219,8 @@ def forward(self, batch, label=None, mask=None, raw_input=None):
             self.medcam_dict['counter'] += 1
             if self.medcam_dict['return_score']:
                 return output, scores
+            elif self.medcam_dict['return_attention']:
+                return output, self.medcam_dict['current_attention_map']
             else:
                 return output
     else:

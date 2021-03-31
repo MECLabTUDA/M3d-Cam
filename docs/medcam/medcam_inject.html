@@ -40,7 +40,7 @@ import numpy as np
 
 def inject(model, output_dir=None, backend=&#39;gcam&#39;, layer=&#39;auto&#39;, label=None, data_shape=&#39;default&#39;,
            save_maps=False, save_pickle=False, save_scores=False, evaluate=False, metric=&#39;wioa&#39;, threshold=&#39;otsu&#39;, retain_graph=False,
-           return_score=False, replace=False, cudnn=True, enabled=True):
+           return_score=False, replace=False, return_attention=False, cudnn=True, enabled=True):
     &#34;&#34;&#34;
     Injects a model with medcam functionality to extract attention maps from it. The model can be used as usual.
     Whenever model(input) or model.forward(input) is called medcam will extract the corresponding attention maps.
@@ -108,6 +108,8 @@ def inject(model, output_dir=None, backend=&#39;gcam&#39;, layer=&#39;auto&#39;,
 
         replace: If the model output should be replaced with the extracted attention map.
 
+        return_attention: If the attention map should be returned along with the unmodified model output.
+
         cudnn: If cudnn should be disabled. Some models (e.g. LSTMs) crash when using medcam with enabled cudnn.
 
         enabled: If medcam should be enabled.
@@ -117,7 +119,7 @@ def inject(model, output_dir=None, backend=&#39;gcam&#39;, layer=&#39;auto&#39;,
     &#34;&#34;&#34;
 
     if _already_injected(model):
-        return
+        return model
 
     if not cudnn:
         torch.backends.cudnn.enabled = False
@@ -145,6 +147,7 @@ def inject(model, output_dir=None, backend=&#39;gcam&#39;, layer=&#39;auto&#39;,
     medcam_dict[&#39;metric&#39;] = metric
     medcam_dict[&#39;return_score&#39;] = return_score
     medcam_dict[&#39;_replace_output&#39;] = replace
+    medcam_dict[&#39;return_attention&#39;] = return_attention
     medcam_dict[&#39;threshold&#39;] = threshold
     medcam_dict[&#39;label&#39;] = label
     medcam_dict[&#39;channels&#39;] = 1  # TODO: Remove in a later version
@@ -242,6 +245,8 @@ def forward(self, batch, label=None, mask=None, raw_input=None):
             self.medcam_dict[&#39;counter&#39;] += 1
             if self.medcam_dict[&#39;return_score&#39;]:
                 return output, scores
+            elif self.medcam_dict[&#39;return_attention&#39;]:
+                return output, self.medcam_dict[&#39;current_attention_map&#39;]
             else:
                 return output
     else:
@@ -438,6 +443,8 @@ def _replace_output(self, output, attention_map, data_shape):
             self.medcam_dict[&#39;counter&#39;] += 1
             if self.medcam_dict[&#39;return_score&#39;]:
                 return output, scores
+            elif self.medcam_dict[&#39;return_attention&#39;]:
+                return output, self.medcam_dict[&#39;current_attention_map&#39;]
             else:
                 return output
     else:
@@ -473,7 +480,7 @@ def _replace_output(self, output, attention_map, data_shape):
 </details>
 </dd>
 <dt id="medcam.medcam_inject.inject"><code class="name flex">
-<span>def <span class="ident">inject</span></span>(<span>model, output_dir=None, backend='gcam', layer='auto', label=None, data_shape='default', save_maps=False, save_pickle=False, save_scores=False, evaluate=False, metric='wioa', threshold='otsu', retain_graph=False, return_score=False, replace=False, cudnn=True, enabled=True)</span>
+<span>def <span class="ident">inject</span></span>(<span>model, output_dir=None, backend='gcam', layer='auto', label=None, data_shape='default', save_maps=False, save_pickle=False, save_scores=False, evaluate=False, metric='wioa', threshold='otsu', retain_graph=False, return_score=False, replace=False, return_attention=False, cudnn=True, enabled=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Injects a model with medcam functionality to extract attention maps from it. The model can be used as usual.
@@ -546,6 +553,8 @@ Example for discriminator: label=lambda x: 0.5 &lt; x
 <dd>If the evaluation evaluation of the current input should be returned in addition to the model output.</dd>
 <dt><strong><code>replace</code></strong></dt>
 <dd>If the model output should be replaced with the extracted attention map.</dd>
+<dt><strong><code>return_attention</code></strong></dt>
+<dd>If the attention map should be returned along with the unmodified model output.</dd>
 <dt><strong><code>cudnn</code></strong></dt>
 <dd>If cudnn should be disabled. Some models (e.g. LSTMs) crash when using medcam with enabled cudnn.</dd>
 <dt><strong><code>enabled</code></strong></dt>
@@ -558,7 +567,7 @@ Example for discriminator: label=lambda x: 0.5 &lt; x
 </summary>
 <pre><code class="python">def inject(model, output_dir=None, backend=&#39;gcam&#39;, layer=&#39;auto&#39;, label=None, data_shape=&#39;default&#39;,
            save_maps=False, save_pickle=False, save_scores=False, evaluate=False, metric=&#39;wioa&#39;, threshold=&#39;otsu&#39;, retain_graph=False,
-           return_score=False, replace=False, cudnn=True, enabled=True):
+           return_score=False, replace=False, return_attention=False, cudnn=True, enabled=True):
     &#34;&#34;&#34;
     Injects a model with medcam functionality to extract attention maps from it. The model can be used as usual.
     Whenever model(input) or model.forward(input) is called medcam will extract the corresponding attention maps.
@@ -626,6 +635,8 @@ Example for discriminator: label=lambda x: 0.5 &lt; x
 
         replace: If the model output should be replaced with the extracted attention map.
 
+        return_attention: If the attention map should be returned along with the unmodified model output.
+
         cudnn: If cudnn should be disabled. Some models (e.g. LSTMs) crash when using medcam with enabled cudnn.
 
         enabled: If medcam should be enabled.
@@ -635,7 +646,7 @@ Example for discriminator: label=lambda x: 0.5 &lt; x
     &#34;&#34;&#34;
 
     if _already_injected(model):
-        return
+        return model
 
     if not cudnn:
         torch.backends.cudnn.enabled = False
@@ -663,6 +674,7 @@ Example for discriminator: label=lambda x: 0.5 &lt; x
     medcam_dict[&#39;metric&#39;] = metric
     medcam_dict[&#39;return_score&#39;] = return_score
     medcam_dict[&#39;_replace_output&#39;] = replace
+    medcam_dict[&#39;return_attention&#39;] = return_attention
     medcam_dict[&#39;threshold&#39;] = threshold
     medcam_dict[&#39;label&#39;] = label
     medcam_dict[&#39;channels&#39;] = 1  # TODO: Remove in a later version
