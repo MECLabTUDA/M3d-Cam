@@ -25,5 +25,5 @@ def Evaluator(save_path, metric="wioa", threshold='otsu', layer_ordering=None):
 
 
 @wraps(medcam_utils.save_attention_map)
-def save(attention_map, filename, raw_input=None):
-    medcam_utils.save_attention_map(filename, attention_map, heatmap=bool(raw_input is not None), raw_input=raw_input)
+def save(attention_map, filename, heatmap, raw_input=None):
+    medcam_utils.save_attention_map(filename, attention_map, heatmap=heatmap, raw_input=raw_input)
