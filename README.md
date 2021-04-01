@@ -5,6 +5,7 @@
 [![Install](https://anaconda.org/conda-forge/medcam/badges/installer/conda.svg)](https://anaconda.org/conda-forge/medcam) 
 ![Python package](https://github.com/MECLabTUDA/M3d-Cam/workflows/Python%20package/badge.svg)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14XXonVYDFrfLd27kKx03nhxJaIfZR9cR?usp=sharing)
+<img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/medcam">
 
 M3d-CAM is an easy to use PyTorch library that allows the generation of **3D/ 2D attention maps** for both **classification and segmentation** with multiple methods such as Guided Backpropagation, 
 Grad-Cam, Guided Grad-Cam and Grad-Cam++. <br/> 
