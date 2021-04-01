@@ -17,6 +17,10 @@ def save_attention_map(filename, attention_map, heatmap, raw_input):
         attention_map: The attention map in HxW or DxHxW format.
         heatmap: If the attention map should be saved as a heatmap. True for gcam and gcampp. False for gbp and ggcam.
     """
+    if isinstance(attention_map, torch.Tensor):
+        attention_map = attention_map.detach().cpu().numpy()
+    if isinstance(raw_input, torch.Tensor):
+        raw_input = raw_input.detach().cpu().numpy()
     dim = len(attention_map.shape)
     attention_map = normalize(attention_map.astype(np.float))
     attention_map = generate_attention_map(attention_map, heatmap, dim, raw_input)
