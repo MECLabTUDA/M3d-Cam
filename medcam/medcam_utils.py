@@ -21,6 +21,8 @@ def save_attention_map(filename, attention_map, heatmap, raw_input):
         attention_map = attention_map.detach().cpu().numpy()
     if isinstance(raw_input, torch.Tensor):
         raw_input = raw_input.detach().cpu().numpy()
+        if raw_input.shape[0] == 1 or raw_input.shape[0] == 3:
+            raw_input = raw_input.transpose(1, 2, 0)
     dim = len(attention_map.shape)
     attention_map = normalize(attention_map.astype(np.float))
     attention_map = generate_attention_map(attention_map, heatmap, dim, raw_input)
@@ -178,10 +180,6 @@ def prod(iterable):
     return reduce(operator.mul, iterable, 1)
 
 def overlay(raw_input, attention_map):
-    if isinstance(raw_input, torch.Tensor):
-        raw_input = raw_input.detach().cpu().numpy()
-        if raw_input.shape[0] == 1 or raw_input.shape[0] == 3:
-            raw_input = raw_input.transpose(1, 2, 0)
     if np.max(raw_input) > 1:
         raw_input = raw_input.astype(np.float)
         raw_input /= 255
