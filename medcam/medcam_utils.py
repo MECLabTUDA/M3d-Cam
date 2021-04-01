@@ -134,7 +134,8 @@ def get_layers(model, reverse=False):
     return layer_names
 
 def interpolate(data, shape, squeeze=False):
-    """Interpolates data to the size of a given shape. Optionally squeezes away the batch and channel dim if the data was given in HxW or DxHxW format."""
+    """Interpolates data to the size of a given shape. Optionally squeezes away the batch and channel dim if the data was given in HxW or DxHxW format.
+    Shape needs to be as size (int or Tuple[int] or Tuple[int, int] or Tuple[int, int, int])"""
     if isinstance(data, np.ndarray):
         # Lazy solution, numpy and scipy have multiple interpolate methods with only linear or nearest, so I don't know which one to use... + they don't work with batches
         # Should be redone with numpy or scipy though
@@ -149,7 +150,8 @@ def interpolate(data, shape, squeeze=False):
     return data
 
 def _interpolate_tensor(data, shape, squeeze):
-    """Interpolates data to the size of a given shape. Optionally squeezes away the batch and channel dim if the data was given in HxW or DxHxW format."""
+    """Interpolates data to the size of a given shape. Optionally squeezes away the batch and channel dim if the data was given in HxW or DxHxW format.
+    Shape needs to be as size (int or Tuple[int] or Tuple[int, int] or Tuple[int, int, int])"""
     _squeeze = 0
     if (len(shape) == 2 and len(data.shape) == 2) or ((len(shape) == 3 and len(data.shape) == 3)):  # Add batch and channel dim
         data = data.unsqueeze(0).unsqueeze(0)
