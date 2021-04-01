@@ -153,7 +153,7 @@ def inject(model, output_dir=None, backend='gcam', layer='auto', label=None, dat
     model_clone._assign_backend = types.MethodType(_assign_backend, model_clone)
     model_clone._process_attention_maps = types.MethodType(_process_attention_maps, model_clone)
     model_clone._save_attention_map = types.MethodType(_save_attention_map, model_clone)
-    model_clone._replace_output = types.MethodType(_replace_output, model_clone)
+    model_clone._replace_or_return = types.MethodType(_replace_or_return, model_clone)
 
     model_backend, heatmap = _assign_backend(backend, model_clone, layer, None, retain_graph)  # TODO: Remove postprocessor in a later version
     medcam_dict['model_backend'] = model_backend
@@ -209,7 +209,7 @@ def forward(self, batch, label=None, mask=None, raw_input=None):
                     self.medcam_dict['current_attention_map'] = attention_map[list(attention_map.keys())[0]]
                     self.medcam_dict['current_layer'] = list(attention_map.keys())[0]
                 scores = self._process_attention_maps(attention_map, mask, batch_size, channels, raw_input)
-                output = self._replace_output(output, attention_map, data_shape)
+                output = self._replace_or_return(output, attention_map, data_shape)
             else:  # If no attention maps could be extracted
                 self.medcam_dict['current_attention_map'] = None
                 self.medcam_dict['current_layer'] = None
@@ -219,8 +219,6 @@ def forward(self, batch, label=None, mask=None, raw_input=None):
             self.medcam_dict['counter'] += 1
             if self.medcam_dict['return_score']:
                 return output, scores
-            elif self.medcam_dict['return_attention']:
-                return output, self.medcam_dict['current_attention_map']
             else:
                 return output
     else:
@@ -301,13 +299,17 @@ def _save_attention_map(self, attention_map, layer_output_dir, j, k, raw_input):
     if self.medcam_dict['save_maps']:
         medcam_utils.save_attention_map(filename=layer_output_dir + "/attention_map_" + str(self.medcam_dict['counter']) + "_" + str(j) + "_" + str(k), attention_map=attention_map, heatmap=self.medcam_dict['heatmap'], raw_input=raw_input)
 
-def _replace_output(self, output, attention_map, data_shape):
+def _replace_or_return(self, output, attention_map, data_shape):
     """Replaces the model output with the current attention map."""
-    if self.medcam_dict['_replace_output']:
+    if self.medcam_dict['_replace_output'] or self.medcam_dict['return_attention']:
         if len(attention_map.keys()) == 1:
-            output = torch.tensor(self.medcam_dict['current_attention_map']).to(str(self.medcam_dict['device']))
+            output_attention_map = torch.FloatTensor(self.medcam_dict['current_attention_map']).to(str(self.medcam_dict['device']))
             if data_shape is not None:  # If data_shape is None then the task is classification -> return unchanged attention map
-                output = medcam_utils.interpolate(output, data_shape)
+                output_attention_map = medcam_utils.interpolate(output_attention_map, data_shape)
+            if self.medcam_dict['_replace_output']:
+                return output_attention_map
+            else:
+                return output, output_attention_map
         else:
-            raise ValueError("Not possible to replace output when layer is 'full', only with 'auto' or a manually set layer")
+            raise ValueError("Not possible to replace output or return attention map when layer is set to 'full', only with 'auto' or a manually set layer")
     return output
