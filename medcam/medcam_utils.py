@@ -6,6 +6,8 @@ import torch
 from torch.nn import functional as F
 from functools import reduce
 import operator
+from pathlib import Path
+import os
 
 MIN_SHAPE = (500, 500)
 
@@ -104,6 +106,7 @@ def normalize(x):
         return (x - np.min(x)) / (np.max(x) - np.min(x))
 
 def _save_file(filename, attention_map, dim):
+    Path(os.path.dirname(filename)).mkdir(parents=True, exist_ok=True)
     if dim == 2:
         cv2.imwrite(filename + ".png", attention_map)
     else:
