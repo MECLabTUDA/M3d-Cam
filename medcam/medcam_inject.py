@@ -199,10 +199,10 @@ def forward(self, batch, label=None, mask=None, raw_input=None):
 
     """
     if self.medcam_dict['enabled']:
-        self.test_run(batch, internal=True)
-        if self.medcam_dict['layer'] == 'full' and not self.medcam_dict['tested']:
-            raise ValueError("Layer mode 'full' requires a test run either during injection or by calling test_run() afterwards")
         with torch.enable_grad():
+            self.test_run(batch, internal=True)
+            if self.medcam_dict['layer'] == 'full' and not self.medcam_dict['tested']:
+                raise ValueError("Layer mode 'full' requires a test run either during injection or by calling test_run() afterwards")
             output, attention_map, batch_size, channels, data_shape = self.medcam_dict['model_backend'].generate_attention_map(batch, label)
             if attention_map:
                 if len(attention_map.keys()) == 1:

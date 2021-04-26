@@ -140,9 +140,9 @@ class GradCAM(_BaseWrapper):
             try:
                 fmaps = self._find(self.fmap_pool, layer)
                 grads = self._find(self.grad_pool, layer)
-                nonzeros = np.count_nonzero(grads.detach().cpu().numpy())  # TODO: Add except here with description, replace nonzero with sum == 0?
+                is_grads_zero = bool(torch.sum(grads) == 0)
                 self._compute_grad_weights(grads)
-                if nonzeros == 0 or not isinstance(fmaps, torch.Tensor) or not isinstance(grads, torch.Tensor):
+                if is_grads_zero or not isinstance(fmaps, torch.Tensor) or not isinstance(grads, torch.Tensor):
                     continue
                 if (len(fmaps.shape) == 4 and len(grads.shape) == 4 and fmaps.shape[2] > 1 and fmaps.shape[3] > 1 and grads.shape[2] > 1 and grads.shape[3] > 1) or \
                     (len(fmaps.shape) == 5 and len(grads.shape) == 5 and fmaps.shape[2] > 1 and fmaps.shape[3] > 1 and fmaps.shape[4] > 1 and grads.shape[2] > 1 and grads.shape[3] > 1 and grads.shape[4] > 1):
