@@ -142,7 +142,7 @@ class GradCAM(_BaseWrapper):
                 grads = self._find(self.grad_pool, layer)
                 is_grads_zero = bool(torch.sum(grads) == 0)
                 self._compute_grad_weights(grads)
-                if is_grads_zero or not isinstance(fmaps, torch.Tensor) or not isinstance(grads, torch.Tensor):
+                if not isinstance(fmaps, torch.Tensor) or not isinstance(grads, torch.Tensor):
                     continue
                 if (len(fmaps.shape) == 4 and len(grads.shape) == 4 and fmaps.shape[2] > 1 and fmaps.shape[3] > 1 and grads.shape[2] > 1 and grads.shape[3] > 1) or \
                     (len(fmaps.shape) == 5 and len(grads.shape) == 5 and fmaps.shape[2] > 1 and fmaps.shape[3] > 1 and fmaps.shape[4] > 1 and grads.shape[2] > 1 and grads.shape[3] > 1 and grads.shape[4] > 1):
@@ -150,6 +150,8 @@ class GradCAM(_BaseWrapper):
                         # print("Selected module layer: {}".format(layer))
                         self.printed_selected_layer = True
                     found_valid_layer = True
+                    if is_grads_zero:
+                        print("WARNING: All gradients in layer {} are zero! The attention map will be empty.".format(layer))
                     break
             except ValueError:
                 pass
