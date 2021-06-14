@@ -4,32 +4,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 from setuptools.command.install import install
-class PostInstallExtrasInstaller(install):
-    extras_install_by_default = ['opencv-python']
-
-    @classmethod
-    def pip_main(cls, *args, **kwargs):
-        def pip_main(*args, **kwargs):
-            raise Exception('No pip module found')
-        try:
-            from pip import main as pip_main
-        except ImportError:
-            from pip._internal import main as pip_main
-
-        ret = pip_main(*args, **kwargs)
-        if ret:
-            raise Exception(f'Exitcode {ret}')
-        return ret
-
+class MyInstall(install):
     def run(self):
-        for extra in self.extras_install_by_default:
-            try:
-                self.pip_main(['install', extra])
-            except Exception as E:
-                print(f'Optional package {extra} not installed: {E}')
-            else:
-                print(f"Optional package {extra} installed")
-        return install.run(self)
+        import subprocess, sys
+        subprocess.call([sys.executable, "-m", "pip", "install", "opencv-python"])
+        install.run(self)
 
 setuptools.setup(
     name="medcam",
@@ -73,10 +52,10 @@ setuptools.setup(
         'SimpleITK',
         'six',
     ],
-    extras_require={
-        'extras': PostInstallExtrasInstaller.extras_install_by_default,
-    },
+    # extras_require={
+    #     'extras': PostInstallExtrasInstaller.extras_install_by_default,
+    # },
     cmdclass={
-        'install': PostInstallExtrasInstaller,
+        'install': MyInstall,
     },
 )
