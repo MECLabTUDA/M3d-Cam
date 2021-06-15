@@ -12,7 +12,7 @@ class MyInstall(install):
 
 setuptools.setup(
     name="medcam",
-    version="0.1.19",
+    version="0.1.21",
     author="Karol Gotkowski",
     author_email="KarolGotkowski@gmx.de",
     description="An easy to use library that makes model predictions more interpretable for humans.",
