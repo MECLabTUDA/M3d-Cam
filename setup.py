@@ -3,6 +3,13 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+from setuptools.command.install import install
+class MyInstall(install):
+    def run(self):
+        import subprocess, sys
+        subprocess.call([sys.executable, "-m", "pip", "install", "opencv-python"])
+        install.run(self)
+
 setuptools.setup(
     name="medcam",
     version="0.1.19",
@@ -33,7 +40,6 @@ setuptools.setup(
         'networkx',
         'nibabel',
         'numpy',
-        'opencv-python',
         'packaging',
         'pandas',
         'Pillow',
@@ -46,4 +52,10 @@ setuptools.setup(
         'SimpleITK',
         'six',
     ],
+    # extras_require={
+    #     'extras': PostInstallExtrasInstaller.extras_install_by_default,
+    # },
+    cmdclass={
+        'install': MyInstall,
+    },
 )
