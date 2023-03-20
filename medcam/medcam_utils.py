@@ -26,7 +26,7 @@ def save_attention_map(filename, attention_map, heatmap, raw_input):
         if raw_input.shape[0] == 1 or raw_input.shape[0] == 3:
             raw_input = raw_input.transpose(1, 2, 0)
     dim = len(attention_map.shape)
-    attention_map = normalize(attention_map.astype(np.float))
+    attention_map = normalize(attention_map.astype(float))
     attention_map = generate_attention_map(attention_map, heatmap, dim, raw_input)
     _save_file(filename, attention_map, dim)
 
@@ -184,11 +184,11 @@ def prod(iterable):
 
 def overlay(raw_input, attention_map):
     if np.max(raw_input) > 1:
-        raw_input = raw_input.astype(np.float)
+        raw_input = raw_input.astype(float)
         raw_input /= 255
     attention_map = cv2.resize(attention_map, tuple(np.flip(raw_input.shape[:2])))
     attention_map = cm.jet_r(attention_map)[..., :3]
-    attention_map = (attention_map.astype(np.float) + raw_input.astype(np.float)) / 2
+    attention_map = (attention_map.astype(float) + raw_input.astype(float)) / 2
     attention_map *= 255
     return attention_map
 
