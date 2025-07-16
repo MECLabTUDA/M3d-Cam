@@ -64,7 +64,7 @@ for batch in data_loader:
 
 ### Usage through GaNDLF
 
-The [Generally Nuanced Deep Learning Framework (GaNDLF)](https://github.com/CBICA/GaNDLF/) [[ref](https://arxiv.org/abs/2103.01006)] provides an end-to-end solution for various deep learning workloads (segmentation, regression, classification, and more) and M3d-CAM can be called from GaNDLF directly via its configuration [[ref](https://cbica.github.io/GaNDLF/usage#m3d-cam-usage)] in an extremely simple manner:
+The [Generally Nuanced Deep Learning Framework (GaNDLF)](https://gandlf.org/) [[ref](https://www.nature.com/articles/s44172-023-00066-3)] provides an end-to-end solution for various deep learning workloads (segmentation, regression, classification, and more) and M3d-CAM can be called from GaNDLF directly via its configuration [[ref](https://docs.mlcommons.org/GaNDLF/usage/#m3d-cam-usage)] in an extremely simple manner:
 
 ```yaml
 medcam: 
