@@ -1,6 +1,4 @@
 import torch
-import numpy as np
-from torch.nn import functional as F
 from medcam import medcam_utils
 
 

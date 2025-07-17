@@ -1,5 +1,4 @@
 from collections import OrderedDict
-import numpy as np
 import torch
 from torch.nn import functional as F
 from medcam.backends.base import _BaseWrapper
